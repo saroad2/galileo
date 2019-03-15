@@ -1,7 +1,6 @@
 package org.galileo.test.position.conversions;
 
-import static org.galileo.internal.MeasureUtil.zero;
-
+import org.galileo.Constants;
 import org.galileo.Units;
 import org.galileo.datum.Datum;
 import org.galileo.datum.Datums;
@@ -11,7 +10,7 @@ import org.galileo.test.TestSuite;
 import org.junit.jupiter.api.Test;
 import tech.units.indriya.quantity.Quantities;
 
-public class LLATOECEFTest extends TestSuite {
+public class LLAToECEFTest extends TestSuite {
 
     private static final Datum datum = Datums.DEFAULT_DATUM;
     private ECEF ecef;
@@ -20,31 +19,31 @@ public class LLATOECEFTest extends TestSuite {
     public void checkConversion() {
         assertAlmostEquals(lla.toECEF(datum), ecef, "conversion from lla to ecef is wrong");
         assertAlmostEquals(ecef.toLLA(datum), lla, "conversion from ecef to lla is wrong");
-    }
+    };
 
     @Test
     public void testConversionInNorthPole() {
         ecef = new ECEF(
-                zero(Units.METER),
-                zero(Units.METER),
+                Constants.ZERO_METERS,
+                Constants.ZERO_METERS,
                 datum.getSemiMinorAxis());
         lla = new LLA(
-                Quantities.getQuantity(90, Units.DEGREE),
-                zero(Units.DEGREE),
-                zero(Units.METER));
+                Constants.NINETY_DEGREES,
+                Constants.ZERO_DEGREES,
+                Constants.ZERO_METERS);
         checkConversion();
     }
 
     @Test
     public void testConversionInSouthPole() {
         ecef = new ECEF(
-                zero(Units.METER),
-                zero(Units.METER),
+                Constants.ZERO_METERS,
+                Constants.ZERO_METERS,
                 datum.getSemiMinorAxis().negate());
         lla = new LLA(
-                Quantities.getQuantity(-90, Units.DEGREE),
-                zero(Units.DEGREE),
-                zero(Units.METER));
+                Constants.NINETY_DEGREES.negate(),
+                Constants.ZERO_DEGREES,
+                Constants.ZERO_METERS);
         checkConversion();
     }
 
@@ -52,25 +51,25 @@ public class LLATOECEFTest extends TestSuite {
     public void testConversionInZeroZero() {
         ecef = new ECEF(
                 datum.getSemiMajorAxis(),
-                zero(Units.METER),
-                zero(Units.METER));
+                Constants.ZERO_METERS,
+                Constants.ZERO_METERS);
         lla = new LLA(
-                zero(Units.DEGREE),
-                zero(Units.DEGREE),
-                zero(Units.METER));
+                Constants.ZERO_DEGREES,
+                Constants.ZERO_DEGREES,
+                Constants.ZERO_METERS);
         checkConversion();
     }
 
     @Test
     public void testConversionInZeroNinety() {
         ecef = new ECEF(
-                zero(Units.METER),
+                Constants.ZERO_METERS,
                 datum.getSemiMajorAxis(),
-                zero(Units.METER));
+                Constants.ZERO_METERS);
         lla = new LLA(
-                zero(Units.DEGREE),
-                Quantities.getQuantity(90, Units.DEGREE),
-                zero(Units.METER));
+                Constants.ZERO_DEGREES,
+                Constants.NINETY_DEGREES,
+                Constants.ZERO_METERS);
         checkConversion();
     }
 
@@ -78,25 +77,25 @@ public class LLATOECEFTest extends TestSuite {
     public void testConversionInZeroOneHundredAndEighty() {
         ecef = new ECEF(
                 datum.getSemiMajorAxis().negate(),
-                zero(Units.METER),
-                zero(Units.METER));
+                Constants.ZERO_METERS,
+                Constants.ZERO_METERS);
         lla = new LLA(
-                zero(Units.DEGREE),
-                Quantities.getQuantity(180, Units.DEGREE),
-                zero(Units.METER));
+                Constants.ZERO_DEGREES,
+                Constants.ONE_HUNDRED_AND_EIGHTY_DEGREES,
+                Constants.ZERO_METERS);
         checkConversion();
     }
 
     @Test
     public void testConversionInZeroMinusNinety() {
         ecef = new ECEF(
-                zero(Units.METER),
+                Constants.ZERO_METERS,
                 datum.getSemiMajorAxis().negate(),
-                zero(Units.METER));
+                Constants.ZERO_METERS);
         lla = new LLA(
-                zero(Units.DEGREE),
-                Quantities.getQuantity(-90, Units.DEGREE),
-                zero(Units.METER));
+                Constants.ZERO_DEGREES,
+                Constants.NINETY_DEGREES.negate(),
+                Constants.ZERO_METERS);
         checkConversion();
     }
 

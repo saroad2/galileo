@@ -5,18 +5,19 @@ import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
 
+import org.galileo.Constants;
 import org.galileo.datum.Datum;
-import org.galileo.internal.ECEFToLLAConverter;
+import org.galileo.datum.Datums;
+import org.galileo.internal.converters.ECEFToENUConverter;
+import org.galileo.internal.converters.ECEFToLLAConverter;
 import org.galileo.internal.MeasureUtil;
-import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.Units;
 
 public class ECEF {
 
 	public static final ECEF EARTH_CENTER = new ECEF(
-			Quantities.getQuantity(0, Units.METRE),
-			Quantities.getQuantity(0, Units.METRE),
-			Quantities.getQuantity(0, Units.METRE));
+			Constants.ZERO_METERS,
+			Constants.ZERO_METERS,
+			Constants.ZERO_METERS);
 
 	private final Quantity<Length> x;
 	private final Quantity<Length> y;
@@ -58,6 +59,20 @@ public class ECEF {
 	public LLA toLLA(Datum datum) {
 		return ECEFToLLAConverter.convert(this, datum);
 	}
+
+	public LLA toLLA() {
+		return toLLA(Datums.DEFAULT_DATUM);
+	}
+
+	public ENU toENU(Datum datum, LLA origin) {
+		return ECEFToENUConverter.convertToENU(this, datum, origin);
+	}
+
+	public ENU toENU(LLA origin) {
+		return toENU(Datums.DEFAULT_DATUM, origin);
+	}
+
+	// Hash and Equals
 
 	@Override
 	public int hashCode() {

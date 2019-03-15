@@ -53,6 +53,8 @@ public class LLA {
 		return toECEF(Datums.DEFAULT_DATUM);
 	}
 
+	// Hash and Equals
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(latitude, longitude, altitude);

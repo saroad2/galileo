@@ -1,4 +1,4 @@
-package org.galileo.internal;
+package org.galileo.internal.converters;
 
 import static org.galileo.internal.MathUtil.sqr;
 import static org.galileo.internal.MathUtil.cube;
@@ -7,11 +7,13 @@ import static org.galileo.internal.MeasureUtil.norm;
 import static org.galileo.internal.MeasureUtil.ratio;
 import static java.lang.Math.sqrt;
 
+import org.galileo.Constants;
 import org.galileo.Units;
 import org.galileo.datum.Datum;
+import org.galileo.internal.AngleUtil;
+import org.galileo.internal.MeasureUtil;
 import org.galileo.position.ECEF;
 import org.galileo.position.LLA;
-import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
@@ -56,8 +58,8 @@ public final class ECEFToLLAConverter {
             return AngleUtil.atan(ratio(z, radius2D) * k, Units.DEGREE);
         }
         if (z.getValue().doubleValue() > 0) {
-            return Quantities.getQuantity(90, Units.DEGREE);
+            return Constants.NINETY_DEGREES;
         }
-        return Quantities.getQuantity(-90, Units.DEGREE);
+        return Constants.NINETY_DEGREES.negate();
     }
 }

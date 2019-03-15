@@ -4,7 +4,6 @@ import org.galileo.internal.AngleUtil;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
-import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Length;
 
 public class DatumImplementation implements Datum {
