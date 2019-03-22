@@ -3,26 +3,33 @@ package org.galileo.test.position.conversions;
 import org.galileo.Constants;
 import org.galileo.Units;
 import org.galileo.datum.Datum;
-import org.galileo.datum.Datums;
 import org.galileo.position.ECEF;
 import org.galileo.position.LLA;
+import org.galileo.test.DatumArgumentsProvider;
 import org.galileo.test.TestSuite;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import tech.units.indriya.quantity.Quantities;
 
 public class LLAToECEFTest extends TestSuite {
 
-    private static final Datum datum = Datums.DEFAULT_DATUM;
     private ECEF ecef;
     private LLA lla;
 
-    public void checkConversion() {
+    public void checkConversion(Datum datum) {
         assertAlmostEquals(lla.toECEF(datum), ecef, "conversion from lla to ecef is wrong");
         assertAlmostEquals(ecef.toLLA(datum), lla, "conversion from ecef to lla is wrong");
-    };
+    }
 
-    @Test
-    public void testConversionInNorthPole() {
+    public void checkConversion() {
+        assertAlmostEquals(lla.toECEF(), ecef, "conversion from lla to ecef is wrong");
+        assertAlmostEquals(ecef.toLLA(), lla, "conversion from ecef to lla is wrong");
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(DatumArgumentsProvider.class)
+    public void testConversionInNorthPole(Datum datum) {
         ecef = new ECEF(
                 Constants.ZERO_METERS,
                 Constants.ZERO_METERS,
@@ -31,11 +38,12 @@ public class LLAToECEFTest extends TestSuite {
                 Constants.NINETY_DEGREES,
                 Constants.ZERO_DEGREES,
                 Constants.ZERO_METERS);
-        checkConversion();
+        checkConversion(datum);
     }
 
-    @Test
-    public void testConversionInSouthPole() {
+    @ParameterizedTest
+    @ArgumentsSource(DatumArgumentsProvider.class)
+    public void testConversionInSouthPole(Datum datum) {
         ecef = new ECEF(
                 Constants.ZERO_METERS,
                 Constants.ZERO_METERS,
@@ -44,11 +52,12 @@ public class LLAToECEFTest extends TestSuite {
                 Constants.NINETY_DEGREES.negate(),
                 Constants.ZERO_DEGREES,
                 Constants.ZERO_METERS);
-        checkConversion();
+        checkConversion(datum);
     }
 
-    @Test
-    public void testConversionInZeroZero() {
+    @ParameterizedTest
+    @ArgumentsSource(DatumArgumentsProvider.class)
+    public void testConversionInZeroZero(Datum datum) {
         ecef = new ECEF(
                 datum.getSemiMajorAxis(),
                 Constants.ZERO_METERS,
@@ -57,11 +66,12 @@ public class LLAToECEFTest extends TestSuite {
                 Constants.ZERO_DEGREES,
                 Constants.ZERO_DEGREES,
                 Constants.ZERO_METERS);
-        checkConversion();
+        checkConversion(datum);
     }
 
-    @Test
-    public void testConversionInZeroNinety() {
+    @ParameterizedTest
+    @ArgumentsSource(DatumArgumentsProvider.class)
+    public void testConversionInZeroNinety(Datum datum) {
         ecef = new ECEF(
                 Constants.ZERO_METERS,
                 datum.getSemiMajorAxis(),
@@ -70,11 +80,12 @@ public class LLAToECEFTest extends TestSuite {
                 Constants.ZERO_DEGREES,
                 Constants.NINETY_DEGREES,
                 Constants.ZERO_METERS);
-        checkConversion();
+        checkConversion(datum);
     }
 
-    @Test
-    public void testConversionInZeroOneHundredAndEighty() {
+    @ParameterizedTest
+    @ArgumentsSource(DatumArgumentsProvider.class)
+    public void testConversionInZeroOneHundredAndEighty(Datum datum) {
         ecef = new ECEF(
                 datum.getSemiMajorAxis().negate(),
                 Constants.ZERO_METERS,
@@ -83,11 +94,12 @@ public class LLAToECEFTest extends TestSuite {
                 Constants.ZERO_DEGREES,
                 Constants.ONE_HUNDRED_AND_EIGHTY_DEGREES,
                 Constants.ZERO_METERS);
-        checkConversion();
+        checkConversion(datum);
     }
 
-    @Test
-    public void testConversionInZeroMinusNinety() {
+    @ParameterizedTest
+    @ArgumentsSource(DatumArgumentsProvider.class)
+    public void testConversionInZeroMinusNinety(Datum datum) {
         ecef = new ECEF(
                 Constants.ZERO_METERS,
                 datum.getSemiMajorAxis().negate(),
@@ -96,7 +108,7 @@ public class LLAToECEFTest extends TestSuite {
                 Constants.ZERO_DEGREES,
                 Constants.NINETY_DEGREES.negate(),
                 Constants.ZERO_METERS);
-        checkConversion();
+        checkConversion(datum);
     }
 
     @Test

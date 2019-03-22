@@ -11,13 +11,18 @@ public class Datums {
 
     public static final Datum WGS84 = buildFromAxes(
             "WGS84",
-            Quantities.getQuantity(6378137.0, Units.METER),
-            Quantities.getQuantity(6356752.314245, Units.METER)
+            Quantities.getQuantity(6_378_137.0, Units.METER),
+            Quantities.getQuantity(6_356_752.314245, Units.METER)
     );
     public static final Datum ED50 = buildFromSemiMajorAxisAndFlattening(
-            "WGS84",
-            Quantities.getQuantity(6378.388, Units.METER),
-            1/ 297.0
+            "ED50",
+            Quantities.getQuantity(6_378_388.0, Units.METER),
+            1 / 297.0
+    );
+    public static final Datum GRS80 = buildFromSemiMajorAxisAndFlattening(
+            "GRS80",
+            Quantities.getQuantity(6_378_137.0, Units.METER),
+            1 / 298.257222101
     );
     public static final Datum DEFAULT_DATUM = WGS84;
 

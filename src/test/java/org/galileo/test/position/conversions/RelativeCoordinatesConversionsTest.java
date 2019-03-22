@@ -8,29 +8,32 @@ import org.galileo.position.ECEF;
 import org.galileo.position.ENU;
 import org.galileo.position.LLA;
 import org.galileo.position.NED;
+import org.galileo.test.DatumArgumentsProvider;
 import org.galileo.test.TestSuite;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import tech.units.indriya.quantity.Quantities;
 
 import static org.galileo.internal.MeasureUtil.zero;
 
 public class RelativeCoordinatesConversionsTest extends TestSuite {
 
-    private static final Datum datum = Datums.DEFAULT_DATUM;
     private ECEF ecef;
     private ENU enu;
     private NED ned;
     private LLA origin;
 
-    public void checkConversion() {
+    public void checkConversion(Datum datum) {
         assertAlmostEquals(ecef.toENU(datum, origin), enu, "conversion from ecef to enu is wrong");
         assertAlmostEquals(enu.toECEF(datum, origin), ecef, "conversion from enu to ecef is wrong");
         assertAlmostEquals(ecef.toNED(datum, origin), ned, "conversion from ecef to ned is wrong");
         assertAlmostEquals(ned.toECEF(datum, origin), ecef, "conversion from ned to ecef is wrong");
     }
 
-    @Test
-    public void testConversionInNorthPoleOriginInEquator() {
+    @ParameterizedTest
+    @ArgumentsSource(DatumArgumentsProvider.class)
+    public void testConversionInNorthPoleOriginInEquator(Datum datum) {
         ecef = new ECEF(
                 Constants.ZERO_METERS,
                 Constants.ZERO_METERS,
@@ -49,11 +52,12 @@ public class RelativeCoordinatesConversionsTest extends TestSuite {
                 Constants.ZERO_METERS,
                 datum.getSemiMajorAxis()
         );
-        checkConversion();
+        checkConversion(datum);
     }
 
-    @Test
-    public void testConversionInSouthPoleOriginInEquator() {
+    @ParameterizedTest
+    @ArgumentsSource(DatumArgumentsProvider.class)
+    public void testConversionInSouthPoleOriginInEquator(Datum datum) {
         ecef = new ECEF(
                 Constants.ZERO_METERS,
                 Constants.ZERO_METERS,
@@ -72,11 +76,12 @@ public class RelativeCoordinatesConversionsTest extends TestSuite {
                 Constants.ZERO_METERS,
                 datum.getSemiMajorAxis()
         );
-        checkConversion();
+        checkConversion(datum);
     }
 
-    @Test
-    public void testConversionWhenOriginIsInPrimeMeridianAndECEFInEast() {
+    @ParameterizedTest
+    @ArgumentsSource(DatumArgumentsProvider.class)
+    public void testConversionWhenOriginIsInPrimeMeridianAndECEFInEast(Datum datum) {
         ecef = new LLA(
                 Constants.ZERO_DEGREES,
                 Constants.NINETY_DEGREES,
@@ -95,11 +100,12 @@ public class RelativeCoordinatesConversionsTest extends TestSuite {
                 datum.getSemiMajorAxis(),
                 datum.getSemiMajorAxis()
         );
-        checkConversion();
+        checkConversion(datum);
     }
 
-    @Test
-    public void testConversionWhenOriginIsInPrimeMeridianAndECEFInWest() {
+    @ParameterizedTest
+    @ArgumentsSource(DatumArgumentsProvider.class)
+    public void testConversionWhenOriginIsInPrimeMeridianAndECEFInWest(Datum datum) {
         ecef = new LLA(
                 Constants.ZERO_DEGREES,
                 Constants.NINETY_DEGREES.negate(),
@@ -118,11 +124,12 @@ public class RelativeCoordinatesConversionsTest extends TestSuite {
                 datum.getSemiMajorAxis().negate(),
                 datum.getSemiMajorAxis()
         );
-        checkConversion();
+        checkConversion(datum);
     }
 
-    @Test
-    public void testConversionWhenOriginIsInPrimeMeridianAndECEFInOtherSide() {
+    @ParameterizedTest
+    @ArgumentsSource(DatumArgumentsProvider.class)
+    public void testConversionWhenOriginIsInPrimeMeridianAndECEFInOtherSide(Datum datum) {
         ecef = new LLA(
                 Constants.ZERO_DEGREES,
                 Constants.ONE_HUNDRED_AND_EIGHTY_DEGREES,
@@ -141,7 +148,7 @@ public class RelativeCoordinatesConversionsTest extends TestSuite {
                 Constants.ZERO_METERS,
                 datum.getSemiMajorAxis().multiply(2)
         );
-        checkConversion();
+        checkConversion(datum);
     }
 
 }
