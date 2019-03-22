@@ -8,7 +8,7 @@ import javax.measure.quantity.Length;
 import org.galileo.Constants;
 import org.galileo.datum.Datum;
 import org.galileo.datum.Datums;
-import org.galileo.internal.converters.ECEFToENUConverter;
+import org.galileo.internal.converters.RelativeCoordinatesConverter;
 import org.galileo.internal.converters.ECEFToLLAConverter;
 import org.galileo.internal.MeasureUtil;
 
@@ -65,11 +65,19 @@ public class ECEF {
 	}
 
 	public ENU toENU(Datum datum, LLA origin) {
-		return ECEFToENUConverter.convertToENU(this, datum, origin);
+		return RelativeCoordinatesConverter.convertToENU(this, datum, origin);
 	}
 
 	public ENU toENU(LLA origin) {
 		return toENU(Datums.DEFAULT_DATUM, origin);
+	}
+
+	public NED toNED(Datum datum, LLA origin) {
+		return RelativeCoordinatesConverter.convertToNED(this, datum, origin);
+	}
+
+	public NED toNED(LLA origin) {
+		return toNED(Datums.DEFAULT_DATUM, origin);
 	}
 
 	// Hash and Equals

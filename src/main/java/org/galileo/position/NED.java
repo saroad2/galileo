@@ -8,30 +8,30 @@ import javax.measure.Quantity;
 import javax.measure.quantity.Length;
 import java.util.Objects;
 
-public class ENU {
+public class NED {
 
-    private final Quantity<Length> east;
     private final Quantity<Length> north;
-    private final Quantity<Length> up;
+    private final Quantity<Length> east;
+    private final Quantity<Length> down;
 
-    public ENU(Quantity<Length> east, Quantity<Length> north, Quantity<Length> up) {
+    public NED(Quantity<Length> north, Quantity<Length> east, Quantity<Length> down) {
         this.east = east;
         this.north = north;
-        this.up = up;
+        this.down = down;
     }
 
     // Getters
-
-    public Quantity<Length> getEast() {
-        return east;
-    }
 
     public Quantity<Length> getNorth() {
         return north;
     }
 
-    public Quantity<Length> getUp() {
-        return up;
+    public Quantity<Length> getEast() {
+        return east;
+    }
+
+    public Quantity<Length> getDown() {
+        return down;
     }
 
 
@@ -53,15 +53,15 @@ public class ENU {
         return toECEF(Datums.DEFAULT_DATUM, origin);
     }
 
-    public NED toNED() {
-        return new NED(north, east, up.negate());
+    public ENU toENU() {
+        return new ENU(east, north, down.negate());
     }
 
     // Hash and Equals
 
     @Override
     public int hashCode() {
-        return Objects.hash(east, north, up);
+        return Objects.hash(north, east, down);
     }
 
     @Override
@@ -70,18 +70,18 @@ public class ENU {
             return true;
         if (obj == null || getClass() != obj.getClass())
             return false;
-        ENU other = (ENU) obj;
-        return Objects.equals(east, other.east) &&
-                Objects.equals(north, other.north) &&
-                Objects.equals(up, other.up);
+        NED other = (NED) obj;
+        return Objects.equals(north, other.north) &&
+                Objects.equals(east, other.east) &&
+                Objects.equals(down, other.down);
     }
 
     @Override
     public String toString() {
         return "ECEF{" +
-                "east=" + east +
-                ", north=" + north +
-                ", up=" + up +
+                "north=" + north +
+                ", east=" + east +
+                ", down=" + down +
                 '}';
     }
 }

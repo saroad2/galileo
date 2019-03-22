@@ -3,6 +3,7 @@ package org.galileo.test;
 import org.galileo.position.ECEF;
 import org.galileo.position.ENU;
 import org.galileo.position.LLA;
+import org.galileo.position.NED;
 import org.galileo.test.internal.QuantityMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
@@ -83,5 +84,21 @@ public class TestSuite {
                 String.format("%s. Up values are conflicting",message),
                 enu1.getUp(),
                 enu2.getUp());
+    }
+
+
+    public static void assertAlmostEquals(NED ned1, NED ned2, String message) {
+        assertQuantitiesEquals(
+                String.format("%s. North values are conflicting",message),
+                ned1.getNorth(),
+                ned2.getNorth());
+        assertQuantitiesEquals(
+                String.format("%s. East values are conflicting",message),
+                ned1.getEast(),
+                ned2.getEast());
+        assertQuantitiesEquals(
+                String.format("%s. Down values are conflicting",message),
+                ned1.getDown(),
+                ned2.getDown());
     }
 }
