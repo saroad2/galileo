@@ -1,26 +1,22 @@
 package org.galileo.position;
 
+import org.galileo.Constants;
 import org.galileo.datum.Datum;
 import org.galileo.datum.Datums;
-import org.galileo.internal.AngleUtil;
-
-import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
-import javax.measure.quantity.Length;
+import java.util.Objects;
 
-public class LLA {
+public class LL {
 
 	private final Quantity<Angle> latitude;
 	private final Quantity<Angle> longitude;
-	private final Quantity<Length> altitude;
 
-	public LLA(Quantity<Angle> latitude, Quantity<Angle> longitude, Quantity<Length> altitude) {
+	public LL(Quantity<Angle> latitude, Quantity<Angle> longitude) {
 		super();
 		this.latitude = latitude;
 		this.longitude = longitude;
-		this.altitude = altitude;
 	}
 
 	// Getters
@@ -33,24 +29,16 @@ public class LLA {
 		return longitude;
 	}
 
-	public Quantity<Length> getAltitude() {
-		return altitude;
-	}
 
 	// Conversions
 
-	public LL toLL() {
-		return new LL(latitude, longitude);
+	public LLA toLLA() {
+		return new LLA(getLatitude(), getLongitude(), Constants.ZERO_METERS);
 	}
 
 	public ECEF toECEF(Datum datum)
 	{
-		Quantity<Length> radiusAtLatitude = datum.radiusAtLatitude(latitude);
-		double cosLatitude = AngleUtil.cos(latitude);
-		return new ECEF(
-				altitude.add(radiusAtLatitude).multiply(cosLatitude).multiply(AngleUtil.cos(longitude)),
-				altitude.add(radiusAtLatitude).multiply(cosLatitude).multiply(AngleUtil.sin(longitude)),
-				radiusAtLatitude.multiply(Math.pow(1-datum.getFlattening(),2)).add(altitude).multiply(AngleUtil.sin(latitude)));
+		return toLLA().toECEF(datum);
 	}
 
 	public ECEF toECEF() {
@@ -77,7 +65,7 @@ public class LLA {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(latitude, longitude, altitude);
+		return Objects.hash(latitude, longitude);
 	}
 
 	@Override
@@ -86,10 +74,9 @@ public class LLA {
 			return true;
 		if (obj == null || getClass() != obj.getClass())
 			return false;
-		LLA other = (LLA) obj;
+		LL other = (LL) obj;
 		return Objects.equals(latitude, other.latitude) &&
-				Objects.equals(longitude, other.longitude) &&
-				Objects.equals(altitude, other.altitude);
+				Objects.equals(longitude, other.longitude);
 	}
 
 	@Override
@@ -97,7 +84,6 @@ public class LLA {
 		return "LLA{" +
 				"latitude=" + latitude +
 				", longitude=" + longitude +
-				", altitude=" + altitude +
 				'}';
 	}
 }

@@ -45,6 +45,14 @@ public class ENU {
         return toLLA(Datums.DEFAULT_DATUM, origin);
     }
 
+    public LL toLL(Datum datum, LLA origin) {
+        return toLLA(datum, origin).toLL();
+    }
+
+    public LL toLL(LLA origin) {
+        return toLL(Datums.DEFAULT_DATUM, origin);
+    }
+
     public ECEF toECEF(Datum datum, LLA origin) {
         return RelativeCoordinatesConverter.convertToECEF(this, datum, origin);
     }

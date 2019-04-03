@@ -1,9 +1,6 @@
 package org.galileo.test;
 
-import org.galileo.position.ECEF;
-import org.galileo.position.ENU;
-import org.galileo.position.LLA;
-import org.galileo.position.NED;
+import org.galileo.position.*;
 import org.galileo.test.internal.QuantityMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
@@ -69,6 +66,17 @@ public class TestSuite {
                 String.format("%s. Altitude values are conflicting", message),
                 lla1.getAltitude(),
                 lla2.getAltitude());
+    }
+
+    public static void assertAlmostEquals(LL ll1, LL ll2, String message) {
+        assertQuantitiesEquals(
+                String.format("%s. Latitude values are conflicting", message),
+                ll1.getLatitude(),
+                ll2.getLatitude());
+        assertQuantitiesEquals(
+                String.format("%s. Longitude values are conflicting", message),
+                ll1.getLongitude(),
+                ll2.getLongitude());
     }
 
     public static void assertAlmostEquals(ENU enu1, ENU enu2, String message) {

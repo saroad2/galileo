@@ -56,6 +56,14 @@ public class ECEF {
 
 	// Conversions
 
+	public LL toLL(Datum datum) {
+		return ECEFToLLAConverter.convert(this, datum).toLL();
+	}
+
+	public LL toLL() {
+		return toLL(Datums.DEFAULT_DATUM);
+	}
+
 	public LLA toLLA(Datum datum) {
 		return ECEFToLLAConverter.convert(this, datum);
 	}
