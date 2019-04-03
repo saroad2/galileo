@@ -3,6 +3,7 @@ package org.galileo.internal.converters;
 import static org.galileo.internal.LinearAlgebraUtil.asVector;
 import static org.galileo.internal.LinearAlgebraUtil.asENU;
 import static org.galileo.internal.LinearAlgebraUtil.asECEF;
+import static org.galileo.internal.LinearAlgebraUtil.asNED;
 
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -37,7 +38,15 @@ public final class RelativeCoordinatesConverter {
     }
 
     public static NED convertToNED(ECEF ecef, Datum datum, LLA origin) {
-        return convertToENU(ecef, datum, origin).toNED();
+        Unit<Length> unit = ecef.getX().getUnit();
+        RealVector originAsECEFVector = asVector(origin.toECEF(datum), unit);
+        RealMatrix conversionMatrix = getNEDConversionMatrix(origin);
+        RealVector conversionVector = asVector(ecef, unit)
+                .subtract(originAsECEFVector);
+        RealVector enuAsVector = new LUDecomposition(conversionMatrix.transpose())
+                .getSolver()
+                .solve(conversionVector);
+        return asNED(enuAsVector, unit);
     }
 
     public static ECEF convertToECEF(ENU enu, Datum datum, LLA origin) {
@@ -49,7 +58,11 @@ public final class RelativeCoordinatesConverter {
     }
 
     public static ECEF convertToECEF(NED ned, Datum datum, LLA origin) {
-        return convertToECEF(ned.toENU(), datum, origin);
+        Unit<Length> unit = ned.getNorth().getUnit();
+        RealVector originAsECEFVector = asVector(origin.toECEF(datum), unit);
+        RealMatrix conversionMatrix = getNEDConversionMatrix(origin);
+        RealVector enuAsVector = asVector(ned, unit);
+        return convertToECEF(originAsECEFVector, enuAsVector, conversionMatrix, unit);
     }
 
     // Private Methods
@@ -75,6 +88,18 @@ public final class RelativeCoordinatesConverter {
                 {-sinLong           , cosLong           , 0},
                 {-sinLat * cosLong  , -sinLat * sinLong , cosLat},
                 {cosLat * cosLong   , cosLat * sinLong  , sinLat}
+        });
+    }
+
+    private static RealMatrix getNEDConversionMatrix(LLA origin) {
+        double cosLat = AngleUtil.cos(origin.getLatitude());
+        double sinLat = AngleUtil.sin(origin.getLatitude());
+        double cosLong = AngleUtil.cos(origin.getLongitude());
+        double sinLong = AngleUtil.sin(origin.getLongitude());
+        return MatrixUtils.createRealMatrix(new double[][]{
+                {-sinLat * cosLong  , -sinLat * sinLong , cosLat},
+                {-sinLong           , cosLong           , 0},
+                {-cosLat * cosLong  , -cosLat * sinLong  , -sinLat}
         });
     }
 
